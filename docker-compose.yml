@@ -1,0 +1,41 @@
+version: '2'
+
+services:
+  laravel:
+    tty: true
+    #image: docker.io/bitnami/laravel:8
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: playground_laravel
+    
+    environment:
+      - DB_HOST=mariadb
+      - DB_USERNAME=user
+      - DB_DATABASE=playground
+      - DB_PASSWORD=password
+
+    depends_on:
+      - mariadb
+
+    ports:
+      - 3000:3000
+      - 8000:8000
+
+    volumes:
+      - ./workspace:/workspace
+      - ./home:/home/bitnami
+
+    command: /bin/sh -c "while sleep 1000; do :; done"      
+    # privileged: true # Privileged mode could be required to run this container under Windows
+
+  mariadb:
+    image: docker.io/bitnami/mariadb:10.2
+    container_name: playground_mariadb
+
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_USER=user
+      - MARIADB_DATABASE=playground
+      - MARIADB_PASSWORD=password    
